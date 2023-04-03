@@ -47,7 +47,6 @@ def gauss(A, b):
     n = len(b)
     # Combine A and b into augmented matrix
     Ab = np.concatenate((A, b.reshape(n,1)), axis=1)
-    # print(Ab)
     # Perform elimination
     for i in range(n):
         # Find pivot row
@@ -72,6 +71,7 @@ def gauss(A, b):
             Ab[j,:] -= factor * Ab[i,:]
     # Extract solution vector x
     x = Ab[:,n]
+    print(Ab)
     return x
 
 def calc_det(A):
@@ -88,6 +88,21 @@ def calc_det(A):
         sum += calc
     
     return sum
+
+def LU_fact(A):
+    n = len(A)
+    U = np.copy(A)
+    L = np.identity(n)
+
+    for i in range(0, n):
+        for j in range(i+1, n):
+            factor = U[j][i]/U[i][i]
+            U[j,:] -= factor * U[i,:]
+            L[j][i] = factor
+            
+        
+
+    return L, U
 
 def is_diag_dom(A):
     n = len(A)
@@ -131,6 +146,12 @@ if __name__ == "__main__":
     
     ans4a = calc_det(A)
     print("%.5f" % ans4a)
+    print()
+
+    ans4b, ans4c = LU_fact(A)
+    print(ans4b)
+    print()
+    print(ans4c)
     print()
 
     A = np.array([[9,0,5,2,1], 
