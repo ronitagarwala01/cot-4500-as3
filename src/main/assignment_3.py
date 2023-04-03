@@ -115,9 +115,22 @@ def is_diag_dom(A):
         
     return True
 
-# def is_pos_def(A):
-
-
+def is_pos_def(A):
+    if not np.allclose(A.T, A):
+        return False
+    
+    # Perform Gaussian Elimination
+    for i in range(0, len(A)):
+        for j in range(i+1, len(A)):
+            factor = A[j][i]/A[i][i]
+            A[j,:] -= factor * A[i,:]
+    
+    # Check pivots
+    for i in range(0, len(A)):
+        if A[i][i] <= 0:
+            return False
+    
+    return True
 
 if __name__ == "__main__":
     ans1 = eulers()
@@ -159,5 +172,11 @@ if __name__ == "__main__":
     
     print(is_diag_dom(A))
     print()
+
+    A = np.array([[2,2,1], 
+                  [2,3,0], 
+                  [1,0,2]], dtype=np.double)
+    
+    print(is_pos_def(A))
 
 
