@@ -77,14 +77,15 @@ def gauss(A, b):
 def calc_det(A):
     n = len(A[0])
 
-    if n == 1:
-        return A[0][0]
+    if n == 2:
+        return A[0][0]*A[1][1] - A[0][1]*A[1][0]
     
     sum = 0.0
     for j in range(0, n):
         M = np.delete(A, 0, 0)
         M = np.delete(M, j, 1)
-        sum += (-1.0 ** j) * A[0,j] * calc_det(M)
+        calc = ((-1.0) ** j) * A[0,j] * calc_det(M)
+        sum += calc
     
     return sum
 
@@ -101,6 +102,9 @@ def is_diag_dom(A):
             return False
         
     return True
+
+# def is_pos_def(A):
+
 
 
 if __name__ == "__main__":
@@ -125,7 +129,8 @@ if __name__ == "__main__":
                   [3, -1, -1, 2], 
                   [-1, 2, 3, -1]], dtype=np.double)
     
-    print(calc_det(A))
+    ans4a = calc_det(A)
+    print("%.5f" % ans4a)
     print()
 
     A = np.array([[9,0,5,2,1], 
