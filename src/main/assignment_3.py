@@ -71,7 +71,6 @@ def gauss(A, b):
             Ab[j,:] -= factor * Ab[i,:]
     # Extract solution vector x
     x = Ab[:,n]
-    print(Ab)
     return x
 
 def calc_det(A):
@@ -100,8 +99,6 @@ def LU_fact(A):
             U[j,:] -= factor * U[i,:]
             L[j][i] = factor
             
-        
-
     return L, U
 
 def is_diag_dom(A):
