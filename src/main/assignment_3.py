@@ -43,6 +43,66 @@ def range_kutta():
         y_start = y_next
     return y_start
 
+def gauss(A, b):
+    n = len(b)
+    # Combine A and b into augmented matrix
+    Ab = np.concatenate((A, b.reshape(n,1)), axis=1)
+    # print(Ab)
+    # Perform elimination
+    for i in range(n):
+        # Find pivot row
+        max_row = i
+        for j in range(i+1, n):
+            if abs(Ab[j,i]) > abs(Ab[max_row,i]):
+                max_row = j
+
+        # Swap rows to bring pivot element to diagonal
+        Ab[[i,max_row], :] = Ab[[max_row,i], :] # operation 3 of row operations
+        # Divide pivot row by pivot element
+        pivot = Ab[i,i]
+        Ab[i,:] = Ab[i,:] / pivot
+        # Eliminate entries below pivot
+        for j in range(i+1, n):
+            factor = Ab[j,i]
+            Ab[j,:] -= factor * Ab[i,:] # operation 2 of row operations
+    # Perform back-substitution
+    for i in range(n-1, -1, -1):
+        for j in range(i-1, -1, -1):
+            factor = Ab[j,i]
+            Ab[j,:] -= factor * Ab[i,:]
+    # Extract solution vector x
+    x = Ab[:,n]
+    return x
+
+def calc_det(A):
+    n = len(A[0])
+
+    if n == 1:
+        return A[0][0]
+    
+    sum = 0.0
+    for j in range(0, n):
+        M = np.delete(A, 0, 0)
+        M = np.delete(M, j, 1)
+        sum += (-1.0 ** j) * A[0,j] * calc_det(M)
+    
+    return sum
+
+def is_diag_dom(A):
+    n = len(A)
+    for i in range(0, n):
+        sum = 0
+        for j in range(0, n):
+            if j == i:
+                continue
+            sum += abs(A[i][j])
+        
+        if abs(A[i][i]) < sum:
+            return False
+        
+    return True
+
+
 if __name__ == "__main__":
     ans1 = eulers()
     print("%.5f" % ans1)
@@ -52,4 +112,29 @@ if __name__ == "__main__":
     print("%.5f" % ans2)
     print()
 
+    A = np.array([[2,-1,1],
+    [1,3,1],
+    [-1,5,4]], dtype=np.double)
+    b = np.array([6,0,-3], dtype=np.double)
+    ans3 = gauss(A, b)
+    print(ans3)
+    print()
+
+    A = np.array([[1, 1, 0, 3], 
+                  [2, 1, -1, 1], 
+                  [3, -1, -1, 2], 
+                  [-1, 2, 3, -1]], dtype=np.double)
     
+    print(calc_det(A))
+    print()
+
+    A = np.array([[9,0,5,2,1], 
+                  [3,9,1,2,1], 
+                  [0,1,7,2,3], 
+                  [-4,2,3,12,2],
+                  [3,2,4,0,8]], dtype=np.double)
+    
+    print(is_diag_dom(A))
+    print()
+
+
